@@ -147,12 +147,31 @@ export default function CounsellorPortal() {
       checkLatestAlert();
     };
 
-    window.addEventListener('saraswati_new_request', handleNewRequest);
-    window.addEventListener('storage', handleNewRequest);
+    // Supabase Realtime WebSocket Subscription
+    let realtimeChannel: any = null;
+    if (isSupabaseConfigured()) {
+      realtimeChannel = supabase
+        .channel('public:demo_requests')
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'demo_requests' },
+          (payload) => {
+            console.log('Realtime new student request received from Supabase:', payload);
+            if (payload.new) {
+              setIncomingAlert({ ...payload.new, isNewAlert: true });
+              setDemoRequests((prev) => [payload.new, ...prev]);
+            }
+          }
+        )
+        .subscribe();
+    }
 
     return () => {
       window.removeEventListener('saraswati_new_request', handleNewRequest);
       window.removeEventListener('storage', handleNewRequest);
+      if (realtimeChannel) {
+        supabase.removeChannel(realtimeChannel);
+      }
     };
   }, []);
 
