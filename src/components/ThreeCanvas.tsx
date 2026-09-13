@@ -13,33 +13,32 @@ export default function ThreeCanvas() {
     const width = currentMount.clientWidth || window.innerWidth;
     const height = currentMount.clientHeight || 500;
 
-    // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.z = 25;
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+    camera.position.z = 28;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     currentMount.appendChild(renderer.domElement);
 
-    // Particle constellation
-    const particleCount = 200;
+    // Subtle, sparse ambient particles
+    const particleCount = 110;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
     const goldColor = new THREE.Color('#D4AF37');
-    const maroonColor = new THREE.Color('#9E1B32');
-    const whiteColor = new THREE.Color('#FFF5EA');
+    const amberColor = new THREE.Color('#F59E0B');
+    const whiteColor = new THREE.Color('#FAF7F2');
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 45;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+      positions[i * 3] = (Math.random() - 0.5) * 50;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 35;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 25;
 
       const choice = Math.random();
-      const c = choice > 0.6 ? goldColor : choice > 0.3 ? maroonColor : whiteColor;
+      const c = choice > 0.5 ? goldColor : choice > 0.25 ? amberColor : whiteColor;
       colors[i * 3] = c.r;
       colors[i * 3 + 1] = c.g;
       colors[i * 3 + 2] = c.b;
@@ -48,51 +47,50 @@ export default function ThreeCanvas() {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Particle texture
     const pMaterial = new THREE.PointsMaterial({
-      size: 0.65,
+      size: 0.4,
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.45,
       blending: THREE.AdditiveBlending
     });
 
     const particles = new THREE.Points(geometry, pMaterial);
     scene.add(particles);
 
-    // Central geometric celestial orb (representing knowledge & clarity)
-    const orbGeometry = new THREE.IcosahedronGeometry(6.5, 2);
+    // Subtle celestial geometric ring
+    const ringGeo = new THREE.RingGeometry(8, 8.04, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xD4AF37,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.15
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 3;
+    scene.add(ring);
+
+    // Soft Icosahedron wireframe
+    const orbGeometry = new THREE.IcosahedronGeometry(7, 1);
     const orbMaterial = new THREE.MeshBasicMaterial({
       color: 0xD4AF37,
       wireframe: true,
       transparent: true,
-      opacity: 0.28
+      opacity: 0.12
     });
     const orb = new THREE.Mesh(orbGeometry, orbMaterial);
     scene.add(orb);
 
-    const innerOrbGeo = new THREE.IcosahedronGeometry(4.2, 1);
-    const innerOrbMat = new THREE.MeshBasicMaterial({
-      color: 0x9E1B32,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.35
-    });
-    const innerOrb = new THREE.Mesh(innerOrbGeo, innerOrbMat);
-    scene.add(innerOrb);
-
-    // Mouse movement interaction
     let mouseX = 0;
     let mouseY = 0;
     const handleMouseMove = (event: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
-      mouseX = (event.clientX / innerWidth - 0.5) * 2;
-      mouseY = (event.clientY / innerHeight - 0.5) * 2;
+      mouseX = (event.clientX / innerWidth - 0.5) * 1.5;
+      mouseY = (event.clientY / innerHeight - 0.5) * 1.5;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-    // Resize handler
     const handleResize = () => {
       if (!currentMount) return;
       const w = currentMount.clientWidth;
@@ -104,7 +102,6 @@ export default function ThreeCanvas() {
 
     window.addEventListener('resize', handleResize);
 
-    // Animation Loop
     let animationFrameId: number;
     const clock = new THREE.Clock();
 
@@ -112,19 +109,13 @@ export default function ThreeCanvas() {
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // Rotate particles and orbs
-      particles.rotation.y = elapsedTime * 0.04;
-      particles.rotation.x = elapsedTime * 0.02;
+      particles.rotation.y = elapsedTime * 0.02;
+      orb.rotation.y = -elapsedTime * 0.03;
+      orb.rotation.x = elapsedTime * 0.015;
+      ring.rotation.z = elapsedTime * 0.025;
 
-      orb.rotation.y = -elapsedTime * 0.08;
-      orb.rotation.x = elapsedTime * 0.05;
-
-      innerOrb.rotation.y = elapsedTime * 0.12;
-      innerOrb.rotation.z = -elapsedTime * 0.06;
-
-      // Gentle camera reaction to mouse
-      camera.position.x += (mouseX * 4 - camera.position.x) * 0.03;
-      camera.position.y += (-mouseY * 3 - camera.position.y) * 0.03;
+      camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+      camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
       camera.lookAt(scene.position);
 
       renderer.render(scene, camera);
@@ -141,10 +132,10 @@ export default function ThreeCanvas() {
       }
       geometry.dispose();
       pMaterial.dispose();
+      ringGeo.dispose();
+      ringMat.dispose();
       orbGeometry.dispose();
       orbMaterial.dispose();
-      innerOrbGeo.dispose();
-      innerOrbMat.dispose();
       renderer.dispose();
     };
   }, []);
@@ -152,8 +143,7 @@ export default function ThreeCanvas() {
   return (
     <div
       ref={mountRef}
-      className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
-      style={{ opacity: 0.9 }}
+      className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-60 dark:opacity-40"
     />
   );
 }
