@@ -72,24 +72,24 @@ export default function LandingPage() {
       <Navbar onOpenPredictionModal={() => setPredictionModalOpen(true)} />
 
       {/* --- HERO SECTION WITH 3D AMBIENT & CLEAN FORM --- */}
-      <section className="relative min-h-[88vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
+      <section className="relative min-h-[82vh] flex items-center justify-center px-3 sm:px-6 lg:px-8 py-8 sm:py-16 overflow-hidden">
         {/* Subtle Ambient 3D */}
         <ThreeCanvas />
 
-        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Left Column: Refined Pitch */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div className="lg:col-span-7 space-y-5 sm:space-y-6 text-center lg:text-left">
             {/* Subtle Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/60 dark:bg-stone-900 border border-stone-300/80 dark:border-stone-800 text-stone-700 dark:text-amber-400 text-xs font-medium">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-200/60 dark:bg-stone-900 border border-stone-300/80 dark:border-stone-800 text-stone-700 dark:text-amber-400 text-[11px] sm:text-xs font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
               <span>Admissions & Option Form Guidance 2025-26</span>
             </div>
 
             {/* Logo & Headline */}
             <div className="space-y-3">
-              <div className="flex items-center justify-center lg:justify-start gap-3.5">
-                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-amber-500/40 bg-white p-0.5 shadow-sm">
+              <div className="flex items-center justify-center lg:justify-start gap-3">
+                <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-amber-500/40 bg-white p-0.5 shadow-sm shrink-0">
                   <Image
                     src="/logo.png"
                     alt="Saraswati Career Counselling"
@@ -99,10 +99,10 @@ export default function LandingPage() {
                   />
                 </div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold font-serif uppercase tracking-wider text-stone-900 dark:text-stone-100">
+                  <h1 className="text-lg sm:text-2xl font-bold font-serif uppercase tracking-wider text-stone-900 dark:text-stone-100">
                     Saraswati
                   </h1>
-                  <p className="text-xs font-medium text-amber-700 dark:text-amber-400 uppercase tracking-widest">
+                  <p className="text-[10px] sm:text-xs font-medium text-amber-700 dark:text-amber-400 uppercase tracking-widest">
                     Career Counselling Centre
                   </p>
                 </div>
@@ -115,24 +115,24 @@ export default function LandingPage() {
                 </span>
               </h2>
 
-              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 max-w-xl leading-relaxed">
+              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Personalized admission mentorship for <strong>MHT-CET</strong>, <strong>JEE Main</strong>, and <strong>NEET</strong>. Get a data-backed college cutoff prediction report sent directly to your inbox.
               </p>
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-2.5 sm:gap-3 pt-1">
               <button
                 onClick={() => setPredictionModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl font-semibold bg-stone-900 dark:bg-amber-500 hover:bg-stone-800 dark:hover:bg-amber-400 text-white dark:text-stone-950 transition-all text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto px-5 py-3 rounded-xl font-semibold bg-stone-900 dark:bg-amber-500 hover:bg-stone-800 dark:hover:bg-amber-400 text-white dark:text-stone-950 transition-all text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 dark:text-stone-950" />
-                <span>Get Prediction PDF</span>
+                <span>Get Free Prediction PDF</span>
               </button>
 
               <Link
                 href="/counsellor"
-                className="px-4 py-2.5 rounded-xl font-medium bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-850 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 transition-all text-xs flex items-center gap-1.5"
+                className="w-full sm:w-auto px-4 py-3 rounded-xl font-medium bg-white dark:bg-stone-900 hover:bg-stone-100 dark:hover:bg-stone-850 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 transition-all text-xs flex items-center justify-center gap-1.5"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                 <span>Counsellor Portal</span>
@@ -142,7 +142,7 @@ export default function LandingPage() {
                 href={instaUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-2.5 rounded-xl font-medium text-stone-600 dark:text-stone-400 hover:text-rose-500 transition-all text-xs flex items-center gap-1"
+                className="w-full sm:w-auto px-3.5 py-3 rounded-xl font-medium text-stone-700 dark:text-stone-400 hover:text-rose-500 bg-white/60 dark:bg-stone-900/60 border border-stone-200 dark:border-stone-800 transition-all text-xs flex items-center justify-center gap-1.5"
                 title="Instagram Profile"
               >
                 <InstagramIcon className="w-3.5 h-3.5 text-rose-500" />
@@ -151,24 +151,24 @@ export default function LandingPage() {
             </div>
 
             {/* Subtle Key Numbers */}
-            <div className="pt-6 grid grid-cols-3 gap-4 border-t border-stone-200/80 dark:border-stone-800/80 max-w-lg mx-auto lg:mx-0 text-left">
-              <div>
-                <div className="text-lg font-bold font-serif text-stone-900 dark:text-stone-100">99.4%</div>
-                <div className="text-[11px] text-stone-500">CAP Allocation Rate</div>
+            <div className="pt-4 grid grid-cols-3 gap-2 sm:gap-4 border-t border-stone-200/80 dark:border-stone-800/80 max-w-lg mx-auto lg:mx-0 text-center sm:text-left">
+              <div className="p-2 sm:p-0 rounded-lg bg-stone-100/50 dark:bg-stone-900/40 sm:bg-transparent">
+                <div className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-stone-100">99.4%</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500">CAP Allocation</div>
               </div>
-              <div>
-                <div className="text-lg font-bold font-serif text-stone-900 dark:text-stone-100">2,500+</div>
-                <div className="text-[11px] text-stone-500">Students Guided</div>
+              <div className="p-2 sm:p-0 rounded-lg bg-stone-100/50 dark:bg-stone-900/40 sm:bg-transparent">
+                <div className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-stone-100">2,500+</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500">Students Guided</div>
               </div>
-              <div>
-                <div className="text-lg font-bold font-serif text-stone-900 dark:text-stone-100">1-on-1</div>
-                <div className="text-[11px] text-stone-500">Personal Mentor</div>
+              <div className="p-2 sm:p-0 rounded-lg bg-stone-100/50 dark:bg-stone-900/40 sm:bg-transparent">
+                <div className="text-base sm:text-lg font-bold font-serif text-stone-900 dark:text-stone-100">1-on-1</div>
+                <div className="text-[10px] sm:text-[11px] text-stone-500">Personal Mentor</div>
               </div>
             </div>
           </div>
 
           {/* Right Column: Clean Minimal Score Form Card */}
-          <div className="lg:col-span-5 bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-6 sm:p-7 shadow-sm text-left">
+          <div className="lg:col-span-5 bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-4 sm:p-7 shadow-sm text-left">
             {quickSubmitted ? (
               <div className="text-center py-6 space-y-3.5">
                 <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-full flex items-center justify-center mx-auto">
@@ -212,7 +212,7 @@ export default function LandingPage() {
                       placeholder="e.g. Aryan Sharma"
                       value={quickForm.studentName}
                       onChange={(e) => setQuickForm({ ...quickForm, studentName: e.target.value })}
-                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
+                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2.5 sm:py-2 text-sm sm:text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
                     />
                   </div>
 
@@ -224,11 +224,11 @@ export default function LandingPage() {
                       placeholder="e.g. student@gmail.com"
                       value={quickForm.email}
                       onChange={(e) => setQuickForm({ ...quickForm, email: e.target.value })}
-                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
+                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2.5 sm:py-2 text-sm sm:text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <div>
                       <label className="block text-stone-700 dark:text-stone-300 font-medium mb-1">Phone / WhatsApp</label>
                       <input
@@ -237,7 +237,7 @@ export default function LandingPage() {
                         placeholder="e.g. 7387773164"
                         value={quickForm.phone}
                         onChange={(e) => setQuickForm({ ...quickForm, phone: e.target.value })}
-                        className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2.5 sm:py-2 text-sm sm:text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
                       />
                     </div>
 
@@ -246,7 +246,7 @@ export default function LandingPage() {
                       <select
                         value={quickForm.targetExam}
                         onChange={(e) => setQuickForm({ ...quickForm, targetExam: e.target.value })}
-                        className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
+                        className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2.5 sm:py-2 text-sm sm:text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:border-amber-500 transition-colors"
                       >
                         <option value="MHT-CET">MHT-CET</option>
                         <option value="JEE-MAIN">JEE Main</option>
@@ -266,13 +266,13 @@ export default function LandingPage() {
                       placeholder="e.g. 98.40"
                       value={quickForm.currentPercentile}
                       onChange={(e) => setQuickForm({ ...quickForm, currentPercentile: e.target.value })}
-                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2 text-amber-700 dark:text-amber-400 font-bold focus:outline-none focus:border-amber-500 transition-colors"
+                      className="w-full bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 rounded-xl px-3 py-2.5 sm:py-2 text-sm sm:text-xs text-amber-700 dark:text-amber-400 font-bold focus:outline-none focus:border-amber-500 transition-colors"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-2.5 rounded-xl font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-sm transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                    className="w-full py-3 rounded-xl font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-sm transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation mt-2"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>Email Me My Prediction PDF</span>

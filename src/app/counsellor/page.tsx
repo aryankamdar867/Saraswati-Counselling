@@ -562,37 +562,38 @@ export default function CounsellorPortal() {
       {/* REAL-TIME INCOMING POP-UP ALERT NOTIFICATION MODAL                        */}
       {/* ========================================================================= */}
       {incomingAlert && (
-        <div className="fixed top-6 right-6 z-50 max-w-md w-full animate-bounce-short">
-          <div className="bg-amber-500 text-slate-950 p-4 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-950 text-amber-400 flex items-center justify-center shrink-0">
+        <div className="fixed top-3 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-md z-50 animate-bounce-short">
+          <div className="bg-amber-500 text-slate-950 p-3.5 sm:p-4 rounded-2xl shadow-2xl border-2 border-amber-300 flex items-start gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-950 text-amber-400 flex items-center justify-center shrink-0">
               <Bell className="w-5 h-5 animate-pulse" />
             </div>
 
-            <div className="flex-1 space-y-1 text-xs">
+            <div className="flex-1 space-y-1 text-xs min-w-0">
               <div className="flex justify-between items-center">
-                <span className="font-extrabold uppercase tracking-wider text-[11px] bg-slate-950 text-amber-300 px-2 py-0.5 rounded">
+                <span className="font-extrabold uppercase tracking-wider text-[10px] sm:text-[11px] bg-slate-950 text-amber-300 px-2 py-0.5 rounded">
                   🚨 New Student Prediction Alert
                 </span>
                 <button
                   onClick={() => setIncomingAlert(null)}
                   className="p-1 hover:bg-amber-600 rounded text-slate-950"
+                  aria-label="Dismiss alert"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="font-black text-sm">
+              <div className="font-black text-xs sm:text-sm truncate">
                 {incomingAlert.student_name || incomingAlert.studentName}
               </div>
 
-              <p className="text-[11px] font-medium leading-tight">
-                Exam: <strong>{incomingAlert.target_exam || incomingAlert.targetExam}</strong> | Score: <strong>{incomingAlert.current_percentile || incomingAlert.currentPercentile}%ile</strong> | Email: <strong>{incomingAlert.email}</strong>
+              <p className="text-[10px] sm:text-[11px] font-medium leading-tight">
+                Exam: <strong>{incomingAlert.target_exam || incomingAlert.targetExam}</strong> | Score: <strong>{incomingAlert.current_percentile || incomingAlert.currentPercentile}%ile</strong>
               </p>
 
-              <div className="pt-2 flex gap-2">
+              <div className="pt-1.5 flex gap-2">
                 <button
                   onClick={() => handleAcceptAlert(incomingAlert)}
-                  className="flex-1 py-1.5 px-3 rounded-lg font-bold bg-slate-950 text-amber-300 hover:bg-slate-900 text-center transition-all text-xs"
+                  className="w-full py-2 px-3 rounded-lg font-bold bg-slate-950 text-amber-300 hover:bg-slate-900 text-center transition-all text-xs touch-manipulation"
                 >
                   Review & Run AI Predictor Now →
                 </button>
@@ -603,35 +604,35 @@ export default function CounsellorPortal() {
       )}
 
       {/* Top Header */}
-      <header className="bg-white dark:bg-slate-900 border-b border-amber-500/20 px-4 sm:px-8 py-3 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="relative w-11 h-11 rounded-full overflow-hidden border border-amber-400 bg-white p-0.5">
+      <header className="bg-white dark:bg-slate-900 border-b border-amber-500/20 px-3 sm:px-8 py-2.5 sm:py-3 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-amber-400 bg-white p-0.5 shrink-0">
               <Image src="/logo.png" alt="Saraswati" fill className="object-contain" />
             </div>
-            <div>
-              <div className="text-sm font-bold font-serif text-slate-900 dark:text-amber-200">
+            <div className="min-w-0">
+              <div className="text-xs sm:text-sm font-bold font-serif text-slate-900 dark:text-amber-200 truncate">
                 SARASWATI COUNSELLOR SUITE
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                <span>Logged in as: <strong className="text-slate-900 dark:text-white">{counsellorName}</strong></span>
+              <div className="text-[9px] sm:text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 truncate">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-ping" />
+                <span className="truncate">Logged in as: <strong className="text-slate-900 dark:text-white">{counsellorName}</strong></span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <ThemeToggle />
             <Link
               href="/"
               target="_blank"
-              className="px-3 py-1.5 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors hidden sm:inline"
             >
-              View Main Site
+              Main Site
             </Link>
             <button
               onClick={handleLogout}
-              className="px-3 py-1.5 rounded-lg text-xs bg-red-100 dark:bg-red-950/80 hover:bg-red-200 dark:hover:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-800 transition-colors flex items-center gap-1 cursor-pointer"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs bg-red-100 dark:bg-red-950/80 hover:bg-red-200 dark:hover:bg-red-900 text-red-800 dark:text-red-200 border border-red-300 dark:border-red-800 transition-colors flex items-center gap-1 cursor-pointer touch-manipulation"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Logout</span>
@@ -641,8 +642,8 @@ export default function CounsellorPortal() {
       </header>
 
       {/* Navigation Tabs */}
-      <div className="bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto flex gap-6 text-xs font-semibold overflow-x-auto">
+      <div className="bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 px-3 sm:px-8">
+        <div className="max-w-7xl mx-auto flex gap-3 sm:gap-6 text-xs font-semibold overflow-x-auto whitespace-nowrap">
           <button
             onClick={() => setActiveTab('predictor')}
             className={`py-3.5 border-b-2 flex items-center gap-2 cursor-pointer transition-colors ${
