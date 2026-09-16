@@ -23,6 +23,9 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import InstagramIcon from '@/components/InstagramIcon';
+import { predictColleges } from '@/lib/college-data';
+import { generateCounsellingDossierPDF } from '@/lib/pdf-generator';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function LandingPage() {
   const [predictionModalOpen, setPredictionModalOpen] = useState(false);
@@ -37,9 +40,68 @@ export default function LandingPage() {
     currentPercentile: ''
   });
   const [quickSubmitted, setQuickSubmitted] = useState(false);
+  const [quickSubmitting, setQuickSubmitting] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<string>('');
 
-  const handleQuickSubmit = (e: React.FormEvent) => {
+  const handleQuickSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setQuickSubmitting(true);
+    setEmailStatus('Generating your AI Cutoff Prediction PDF...');
+
+    const percentileNum = quickForm.currentPercentile ? parseFloat(quickForm.currentPercentile) : 95.0;
+
+    // 1. Run AI Predictor Engine in real-time
+    const predictions = predictColleges({
+      exam: quickForm.targetExam as any,
+      percentile: percentileNum,
+      category: 'OPEN',
+      branches: ['Computer', 'Information Technology', 'AI']
+    });
+
+    let pdfBase64 = '';
+    try {
+      // 2. Generate Official PDF in real-time
+      const pdfResult = await generateCounsellingDossierPDF({
+        studentName: quickForm.studentName,
+        studentPhone: quickForm.phone,
+        studentEmail: quickForm.email,
+        exam: quickForm.targetExam,
+        percentile: percentileNum,
+        category: 'OPEN',
+        preferredBranches: ['Engineering / Medical'],
+        counsellorName: 'Aryan Khotare (Director of Admissions)',
+        counsellorRemarks: 'Automated Real-Time AI College Prediction Report based on previous year CAP cutoffs.',
+        predictions
+      });
+      pdfBase64 = pdfResult.base64;
+    } catch (pdfErr) {
+      console.error('PDF Generation Error:', pdfErr);
+    }
+
+    // 3. Dispatch Email with attached PDF
+    let emailDelivered = false;
+    try {
+      setEmailStatus('Dispatching PDF to your email inbox in real-time...');
+      const response = await fetch('/api/send-pdf-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName: quickForm.studentName,
+          studentEmail: quickForm.email,
+          studentPhone: quickForm.phone,
+          exam: quickForm.targetExam,
+          percentile: percentileNum,
+          counsellorName: 'Aryan Khotare (Director of Admissions)',
+          counsellorRemarks: 'Automated Real-Time AI College Prediction Report based on previous year CAP cutoffs.',
+          pdfBase64
+        })
+      });
+      const data = await response.json();
+      emailDelivered = !!data.delivered;
+    } catch (emailErr) {
+      console.error('Email Dispatch Error:', emailErr);
+    }
+
     const newRequest = {
       id: `req_${Date.now()}`,
       student_name: quickForm.studentName,
@@ -48,22 +110,32 @@ export default function LandingPage() {
       phone: quickForm.phone,
       target_exam: quickForm.targetExam,
       targetExam: quickForm.targetExam,
-      current_percentile: quickForm.currentPercentile ? parseFloat(quickForm.currentPercentile) : 95.0,
-      currentPercentile: quickForm.currentPercentile ? parseFloat(quickForm.currentPercentile) : 95.0,
+      current_percentile: percentileNum,
+      currentPercentile: percentileNum,
       category: 'OPEN',
       target_branch: 'Engineering / Medical',
       preferred_city: 'Maharashtra',
-      status: 'pending_prediction',
+      status: emailDelivered ? 'pdf_emailed' : 'pending_prediction',
       created_at: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       isNewAlert: true
     };
+
+    // 4. Save to Supabase & LocalStorage
+    try {
+      if (isSupabaseConfigured()) {
+        await supabase.from('demo_requests').insert([newRequest]);
+      }
+    } catch (supaErr) {
+      console.warn('Supabase save note:', supaErr);
+    }
 
     const existing = JSON.parse(localStorage.getItem('saraswati_demo_requests') || '[]');
     localStorage.setItem('saraswati_demo_requests', JSON.stringify([newRequest, ...existing]));
     localStorage.setItem('saraswati_latest_prediction_request', JSON.stringify(newRequest));
     window.dispatchEvent(new Event('saraswati_new_request'));
 
+    setQuickSubmitting(false);
     setQuickSubmitted(true);
   };
 
@@ -272,10 +344,20 @@ export default function LandingPage() {
 
                   <button
                     type="submit"
-                    className="w-full py-3 rounded-xl font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-sm transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation mt-2"
+                    disabled={quickSubmitting}
+                    className="w-full py-3 rounded-xl font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-sm transition-all text-xs flex items-center justify-center gap-1.5 cursor-pointer touch-manipulation mt-2 disabled:opacity-50"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Email Me My Prediction PDF</span>
+                    {quickSubmitting ? (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                        <span>{emailStatus || 'Generating & Emailing PDF...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Email Me My Prediction PDF</span>
+                      </>
+                    )}
                   </button>
                 </form>
               </div>

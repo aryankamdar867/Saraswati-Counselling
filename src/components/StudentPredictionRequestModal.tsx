@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { X, CheckCircle2, Phone, Mail, User, BookOpen, Sparkles, Send, ArrowRight, ShieldCheck } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { predictColleges } from '@/lib/college-data';
+import { generateCounsellingDossierPDF } from '@/lib/pdf-generator';
 
 interface StudentPredictionRequestModalProps {
   isOpen: boolean;
@@ -33,6 +35,60 @@ export default function StudentPredictionRequestModal({ isOpen, onClose }: Stude
     setLoading(true);
     setErrorMsg('');
 
+    const percentileNum = formData.currentPercentile ? parseFloat(formData.currentPercentile) : 95.0;
+
+    // 1. Run AI Predictor in real-time
+    const predictions = predictColleges({
+      exam: formData.targetExam as any,
+      percentile: percentileNum,
+      category: formData.category,
+      branches: [formData.targetBranch || 'Computer', 'Information Technology', 'AI'],
+      city: formData.preferredCity
+    });
+
+    let pdfBase64 = '';
+    try {
+      // 2. Generate PDF in real-time
+      const pdfResult = await generateCounsellingDossierPDF({
+        studentName: formData.studentName,
+        studentPhone: formData.phone,
+        studentEmail: formData.email,
+        exam: formData.targetExam,
+        percentile: percentileNum,
+        category: formData.category,
+        preferredBranches: [formData.targetBranch || 'Computer Science / IT'],
+        counsellorName: 'Aryan Khotare (Director of Admissions)',
+        counsellorRemarks: `Student Notes: "${formData.notes || 'N/A'}". Strategic guidance: Lock top dream choices 1-5, target options 6-15.`,
+        predictions
+      });
+      pdfBase64 = pdfResult.base64;
+    } catch (pdfErr) {
+      console.error('Modal PDF Generation Error:', pdfErr);
+    }
+
+    // 3. Dispatch Email in real-time
+    let emailDelivered = false;
+    try {
+      const response = await fetch('/api/send-pdf-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName: formData.studentName,
+          studentEmail: formData.email,
+          studentPhone: formData.phone,
+          exam: formData.targetExam,
+          percentile: percentileNum,
+          counsellorName: 'Aryan Khotare (Director of Admissions)',
+          counsellorRemarks: `Student Notes: "${formData.notes || 'N/A'}". Strategic guidance: Lock top dream choices 1-5, target options 6-15.`,
+          pdfBase64
+        })
+      });
+      const data = await response.json();
+      emailDelivered = !!data.delivered;
+    } catch (emailErr) {
+      console.error('Modal Email Dispatch Error:', emailErr);
+    }
+
     const newRequest = {
       id: `req_${Date.now()}`,
       student_name: formData.studentName,
@@ -41,15 +97,15 @@ export default function StudentPredictionRequestModal({ isOpen, onClose }: Stude
       phone: formData.phone,
       target_exam: formData.targetExam,
       targetExam: formData.targetExam,
-      current_percentile: formData.currentPercentile ? parseFloat(formData.currentPercentile) : 95.0,
-      currentPercentile: formData.currentPercentile ? parseFloat(formData.currentPercentile) : 95.0,
+      current_percentile: percentileNum,
+      currentPercentile: percentileNum,
       category: formData.category,
       target_branch: formData.targetBranch,
       targetBranch: formData.targetBranch,
       preferred_city: formData.preferredCity,
       preferredCity: formData.preferredCity,
       notes: formData.notes,
-      status: 'pending_prediction',
+      status: emailDelivered ? 'pdf_emailed' : 'pending_prediction',
       created_at: new Date().toISOString(),
       createdAt: new Date().toISOString(),
       isNewAlert: true

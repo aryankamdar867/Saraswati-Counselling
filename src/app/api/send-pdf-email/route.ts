@@ -22,8 +22,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 465;
     const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || 'khotarearyan@gmail.com';
-    const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+    const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || process.env.GMAIL_PASSWORD;
 
     // Email HTML Template
     const emailHtml = `
@@ -83,13 +85,26 @@ export async function POST(req: NextRequest) {
 
     // If SMTP Credentials are provided, send actual email via Nodemailer
     if (smtpPass) {
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: smtpUser,
-          pass: smtpPass
-        }
-      });
+      let transporter;
+      if (smtpHost) {
+        transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
+      } else {
+        transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
+      }
 
       const attachments: any[] = [];
       if (pdfBase64) {
@@ -117,14 +132,14 @@ export async function POST(req: NextRequest) {
         message: `Email successfully sent to ${studentEmail} with attached PDF!`
       });
     } else {
-      // SMTP credentials not yet provided in .env
+      // SMTP credentials not yet configured
       return NextResponse.json({
         success: true,
         delivered: false,
         requiresSmtpConfig: true,
         recipient: studentEmail,
         smtpUser,
-        message: `Email template and attached PDF prepared for ${studentEmail}. To dispatch automatically, add your Gmail App Password to GMAIL_APP_PASSWORD in .env.local!`
+        message: `Prediction report prepared for ${studentEmail}. Note: To deliver live emails to students' actual inboxes, add your Gmail App Password to GMAIL_APP_PASSWORD in .env.local!`
       });
     }
   } catch (error: any) {
