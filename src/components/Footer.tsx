@@ -82,6 +82,11 @@ export default function Footer({ onOpenDemoModal }: { onOpenDemoModal?: () => vo
                 </Link>
               </li>
               <li>
+                <Link href="/owner" className="text-amber-400/90 font-medium hover:text-amber-300 transition-colors flex items-center gap-1">
+                  <span>👑 Owner Executive Portal & Mastersheet</span>
+                </Link>
+              </li>
+              <li>
                 <a href="#how-it-works" className="hover:text-amber-400 transition-colors">
                   How AI Prediction Works
                 </a>

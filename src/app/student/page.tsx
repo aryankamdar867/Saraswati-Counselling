@@ -25,6 +25,7 @@ import {
 import ThemeToggle from '@/components/ThemeToggle';
 import { predictColleges, PredictionResult } from '@/lib/college-data';
 import { generateCounsellingDossierPDF } from '@/lib/pdf-generator';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export default function StudentPortal() {
   const [studentData, setStudentData] = useState({
@@ -66,9 +67,69 @@ export default function StudentPortal() {
     setStudentPrediction(res);
   };
 
-  const handleSimulatePayment = (e: React.FormEvent) => {
+  const handleSimulatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setPaymentStep('processing');
+
+    const assignedUtr = utrNumber || `UTR${Date.now().toString().slice(-8)}`;
+
+    const paymentRecord = {
+      id: `pay_${Date.now()}`,
+      student_name: studentData.fullName,
+      studentName: studentData.fullName,
+      email: studentData.email,
+      phone: studentData.phone,
+      target_exam: studentData.exam,
+      targetExam: studentData.exam,
+      current_percentile: studentData.percentile,
+      currentPercentile: studentData.percentile,
+      category: studentData.category,
+      target_branch: studentData.targetBranch,
+      targetBranch: studentData.targetBranch,
+      preferred_city: 'Maharashtra',
+      amount_paid: 6000,
+      amountPaid: 6000,
+      payment_status: 'paid',
+      paymentStatus: 'paid',
+      payment_method: paymentMethod,
+      paymentMethod: paymentMethod,
+      utr_number: assignedUtr,
+      status: 'enrolled_paid',
+      paid_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      isNewAlert: true
+    };
+
+    // Save to payments list
+    try {
+      const existingPayments = JSON.parse(localStorage.getItem('saraswati_payments') || '[]');
+      localStorage.setItem('saraswati_payments', JSON.stringify([paymentRecord, ...existingPayments]));
+
+      // Update demo_requests list
+      const existingReqs = JSON.parse(localStorage.getItem('saraswati_demo_requests') || '[]');
+      const updatedReqs = existingReqs.map((r: any) => {
+        if (r.email?.toLowerCase() === studentData.email.toLowerCase() || r.phone === studentData.phone) {
+          return { ...r, ...paymentRecord, payment_status: 'paid', status: 'enrolled_paid' };
+        }
+        return r;
+      });
+      // If not already in list, prepend
+      if (!updatedReqs.some((r: any) => r.email?.toLowerCase() === studentData.email.toLowerCase())) {
+        updatedReqs.unshift(paymentRecord);
+      }
+      localStorage.setItem('saraswati_demo_requests', JSON.stringify(updatedReqs));
+
+      // Push to Supabase if configured
+      if (isSupabaseConfigured()) {
+        await supabase.from('demo_requests').insert([paymentRecord]);
+      }
+
+      window.dispatchEvent(new Event('saraswati_payment_received'));
+      window.dispatchEvent(new Event('saraswati_new_request'));
+    } catch (err) {
+      console.warn('Payment logging note:', err);
+    }
 
     setTimeout(() => {
       setIsPaid(true);
@@ -82,7 +143,7 @@ export default function StudentPortal() {
         spread: 70,
         origin: { y: 0.6 }
       });
-    }, 1500);
+    }, 1200);
   };
 
   const handleDownloadReport = async () => {

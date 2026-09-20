@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Phone, Mail, Menu, X, Sparkles, User, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, Menu, X, Sparkles, User, ShieldCheck, Crown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import InstagramIcon from './InstagramIcon';
 
@@ -82,7 +82,7 @@ export default function Navbar({ onOpenPredictionModal }: NavbarProps) {
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 text-xs font-medium text-stone-600 dark:text-stone-300">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-medium text-stone-600 dark:text-stone-300">
             <Link href="/#programs" className="hover:text-amber-700 dark:hover:text-amber-300 transition-colors">
               Programs
             </Link>
@@ -100,30 +100,39 @@ export default function Navbar({ onOpenPredictionModal }: NavbarProps) {
               className="text-stone-700 dark:text-amber-300/90 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1.5 transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span>Counsellor Portal</span>
+              <span>Counsellor</span>
             </Link>
           </nav>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2 sm:gap-2.5">
             <ThemeToggle />
 
             {onOpenPredictionModal && (
               <button
                 onClick={onOpenPredictionModal}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-900 dark:bg-amber-500 hover:bg-stone-800 dark:hover:bg-amber-400 text-white dark:text-stone-950 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
-                <Sparkles className="w-3 h-3 text-amber-400 dark:text-stone-950" />
-                <span>Get Prediction PDF</span>
+                <Sparkles className="w-3 h-3 text-stone-950" />
+                <span>Prediction PDF</span>
               </button>
             )}
 
             <Link
               href="/student"
-              className="px-3.5 py-2 rounded-xl text-xs font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white transition-all flex items-center gap-1.5"
+              className="px-3 py-2 rounded-xl text-xs font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white transition-all flex items-center gap-1.5"
             >
               <User className="w-3.5 h-3.5" />
-              Student Portal
+              <span>Student</span>
+            </Link>
+
+            <Link
+              href="/owner"
+              className="px-3 py-2 rounded-xl text-xs font-semibold bg-stone-900 dark:bg-stone-800 border border-amber-500/40 text-amber-400 hover:bg-stone-800 dark:hover:bg-stone-700 transition-all flex items-center gap-1.5 shadow-sm"
+              title="Owner Executive Portal & Mastersheet"
+            >
+              <Crown className="w-3.5 h-3.5 text-amber-400" />
+              <span>Owner</span>
             </Link>
           </div>
 
@@ -189,23 +198,32 @@ export default function Navbar({ onOpenPredictionModal }: NavbarProps) {
               </button>
             )}
 
-            <div className="grid grid-cols-2 gap-2 pt-1">
+            <div className="grid grid-cols-3 gap-1.5 pt-1">
               <Link
                 href="/student"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-xl font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-800 dark:text-stone-200 text-center flex items-center justify-center gap-1.5"
+                className="py-2.5 px-2 rounded-xl font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-800 dark:text-stone-200 text-center flex items-center justify-center gap-1 text-[11px]"
               >
-                <User className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                <span>Student Portal</span>
+                <User className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span>Student</span>
               </Link>
 
               <Link
                 href="/counsellor"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-3 rounded-xl font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-800 dark:text-stone-200 text-center flex items-center justify-center gap-1.5"
+                className="py-2.5 px-2 rounded-xl font-medium bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-stone-800 dark:text-stone-200 text-center flex items-center justify-center gap-1 text-[11px]"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>Counsellor</span>
+              </Link>
+
+              <Link
+                href="/owner"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2.5 px-2 rounded-xl font-semibold bg-stone-900 dark:bg-stone-800 border border-amber-500/40 text-amber-400 text-center flex items-center justify-center gap-1 text-[11px]"
+              >
+                <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Owner</span>
               </Link>
             </div>
 
