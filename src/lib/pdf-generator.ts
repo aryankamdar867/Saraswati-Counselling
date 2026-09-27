@@ -136,13 +136,14 @@ export async function generateCounsellingDossierPDF(data: StudentDossierData): P
       c.branch,
       c.city,
       `${c.closingPercentile}%`,
+      c.admissionProbability ? `${c.admissionProbability}%` : 'High',
       c.avgPackageLpa ? `₹${c.avgPackageLpa} LPA` : 'N/A',
       c.annualFees ? `₹${(c.annualFees / 1000).toFixed(0)}k/yr` : 'Govt'
     ]);
 
     autoTable(doc, {
       startY: currentY + 6,
-      head: [['#', 'Code', 'Institute Name', 'Branch / Specialization', 'City', 'Cutoff %ile', 'Avg CTC', 'Fees']],
+      head: [['#', 'Code', 'Institute Name', 'Branch / Specialization', 'City', 'Cutoff %ile', 'AI Prob %', 'Avg CTC', 'Fees']],
       body: tableRows,
       theme: 'grid',
       headStyles: {
@@ -158,14 +159,15 @@ export async function generateCounsellingDossierPDF(data: StudentDossierData): P
         valign: 'middle'
       },
       columnStyles: {
-        0: { cellWidth: 8, halign: 'center' },
-        1: { cellWidth: 14, halign: 'center' },
-        2: { cellWidth: 62 },
-        3: { cellWidth: 46 },
-        4: { cellWidth: 18, halign: 'center' },
-        5: { cellWidth: 18, halign: 'center', fontStyle: 'bold' },
-        6: { cellWidth: 14, halign: 'center' },
-        7: { cellWidth: 14, halign: 'center' }
+        0: { cellWidth: 7, halign: 'center' },
+        1: { cellWidth: 13, halign: 'center' },
+        2: { cellWidth: 56 },
+        3: { cellWidth: 42 },
+        4: { cellWidth: 16, halign: 'center' },
+        5: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+        6: { cellWidth: 16, halign: 'center', fontStyle: 'bold' },
+        7: { cellWidth: 12, halign: 'center' },
+        8: { cellWidth: 14, halign: 'center' }
       },
       margin: { left: 14, right: 14 }
     });

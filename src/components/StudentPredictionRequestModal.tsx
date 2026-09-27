@@ -55,10 +55,11 @@ export default function StudentPredictionRequestModal({ isOpen, onClose }: Stude
         studentEmail: formData.email,
         exam: formData.targetExam,
         percentile: percentileNum,
+        rank: predictions.summary?.estimatedRank,
         category: formData.category,
         preferredBranches: [formData.targetBranch || 'Computer Science / IT'],
         counsellorName: 'Aryan Khotare (Director of Admissions)',
-        counsellorRemarks: `Student Notes: "${formData.notes || 'N/A'}". Strategic guidance: Lock top dream choices 1-5, target options 6-15.`,
+        counsellorRemarks: `Student Notes: "${formData.notes || 'N/A'}". ${predictions.summary?.strategyRemarks || 'Strategic guidance: Lock top dream choices 1-5, target options 6-15.'}`,
         predictions
       });
       pdfBase64 = pdfResult.base64;
