@@ -61,8 +61,8 @@ interface StudentRecord {
 export default function OwnerPortal() {
   // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [ownerEmail, setOwnerEmail] = useState('owner@saraswati.com');
-  const [ownerPassword, setOwnerPassword] = useState('admin123');
+  const [ownerEmail, setOwnerEmail] = useState('khotarearyan@gmail.com');
+  const [ownerPassword, setOwnerPassword] = useState('Saraswati@9.9.0.0');
   const [loginError, setLoginError] = useState('');
 
   // Data State
@@ -253,15 +253,18 @@ export default function OwnerPortal() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    const validEmails = ['khotarearyan@gmail.com', 'owner@saraswati.com', 'aryan@saraswati.com'];
+    const validPasswords = ['Saraswati@9.9.0.0', 'admin123'];
+
     if (
-      (ownerEmail.toLowerCase() === 'owner@saraswati.com' || ownerEmail.toLowerCase() === 'aryan@saraswati.com') &&
-      ownerPassword === 'admin123'
+      validEmails.includes(ownerEmail.trim().toLowerCase()) &&
+      validPasswords.includes(ownerPassword.trim())
     ) {
       setIsLoggedIn(true);
       localStorage.setItem('saraswati_owner_logged_in', 'true');
       setLoginError('');
     } else {
-      setLoginError('Invalid Owner credentials. Use owner@saraswati.com / admin123');
+      setLoginError('Invalid Owner credentials. Please check your login ID and password.');
     }
   };
 

@@ -43,8 +43,8 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 export default function CounsellorPortal() {
   // Authentication & Counsellor State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [counsellorEmail, setCounsellorEmail] = useState('aryan@saraswati.com');
-  const [counsellorPassword, setCounsellorPassword] = useState('admin123');
+  const [counsellorEmail, setCounsellorEmail] = useState('khotarearyan@gmail.com');
+  const [counsellorPassword, setCounsellorPassword] = useState('Saraswati@9.9.0.0');
   const [counsellorName, setCounsellorName] = useState('Aryan Khotare (Director of Admissions)');
 
   // Active Tab: 'predictor' | 'demos' | 'dataset' | 'saved'
