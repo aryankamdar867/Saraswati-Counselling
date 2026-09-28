@@ -61,8 +61,9 @@ interface StudentRecord {
 export default function OwnerPortal() {
   // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [ownerEmail, setOwnerEmail] = useState('khotarearyan@gmail.com');
-  const [ownerPassword, setOwnerPassword] = useState('Saraswati@9.9.0.0');
+  const [ownerEmail, setOwnerEmail] = useState('');
+  const [ownerPassword, setOwnerPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   // Data State
@@ -251,20 +252,30 @@ export default function OwnerPortal() {
     setRecords(Array.from(map.values()));
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validEmails = ['khotarearyan@gmail.com', 'owner@saraswati.com', 'aryan@saraswati.com'];
-    const validPasswords = ['Saraswati@9.9.0.0', 'admin123'];
+    setLoginLoading(true);
+    setLoginError('');
 
-    if (
-      validEmails.includes(ownerEmail.trim().toLowerCase()) &&
-      validPasswords.includes(ownerPassword.trim())
-    ) {
-      setIsLoggedIn(true);
-      localStorage.setItem('saraswati_owner_logged_in', 'true');
-      setLoginError('');
-    } else {
-      setLoginError('Invalid Owner credentials. Please check your login ID and password.');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: ownerEmail, password: ownerPassword, role: 'owner' })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIsLoggedIn(true);
+        localStorage.setItem('saraswati_owner_logged_in', 'true');
+        setLoginError('');
+      } else {
+        setLoginError(data.error || 'Invalid Owner credentials.');
+      }
+    } catch (err) {
+      setLoginError('Server authentication failed. Please try again.');
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -538,16 +549,12 @@ export default function OwnerPortal() {
 
             {loginError && <p className="text-rose-500 text-xs text-center">{loginError}</p>}
 
-            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-500/20 rounded-xl p-3 text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2">
-              <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-              <span>Owner demo key prefilled. Click enter to access the executive dashboard immediately.</span>
-            </div>
-
             <button
               type="submit"
-              className="w-full py-3 rounded-xl font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md transition-all text-xs cursor-pointer touch-manipulation"
+              disabled={loginLoading}
+              className="w-full py-3 rounded-xl font-bold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-md transition-all text-xs cursor-pointer touch-manipulation disabled:opacity-50"
             >
-              Enter Owner Dashboard
+              {loginLoading ? 'Verifying Credentials...' : 'Enter Owner Dashboard'}
             </button>
           </form>
 

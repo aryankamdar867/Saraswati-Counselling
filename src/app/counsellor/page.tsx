@@ -43,8 +43,10 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 export default function CounsellorPortal() {
   // Authentication & Counsellor State
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [counsellorEmail, setCounsellorEmail] = useState('khotarearyan@gmail.com');
-  const [counsellorPassword, setCounsellorPassword] = useState('Saraswati@9.9.0.0');
+  const [counsellorEmail, setCounsellorEmail] = useState('');
+  const [counsellorPassword, setCounsellorPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const [counsellorName, setCounsellorName] = useState('Aryan Khotare (Director of Admissions)');
 
   // Active Tab: 'predictor' | 'demos' | 'dataset' | 'saved'
@@ -224,11 +226,30 @@ export default function CounsellorPortal() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (counsellorEmail && counsellorPassword) {
-      setIsLoggedIn(true);
-      localStorage.setItem('saraswati_counsellor_logged_in', 'true');
+    setLoginLoading(true);
+    setLoginError('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: counsellorEmail, password: counsellorPassword, role: 'counsellor' })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setIsLoggedIn(true);
+        localStorage.setItem('saraswati_counsellor_logged_in', 'true');
+        setLoginError('');
+      } else {
+        setLoginError(data.error || 'Invalid Counsellor credentials.');
+      }
+    } catch (err) {
+      setLoginError('Server authentication error.');
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -531,16 +552,14 @@ export default function CounsellorPortal() {
               />
             </div>
 
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2">
-              <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-              <span>Demo accounts enabled: Dr. Rajesh Deshmukh / Aryan Khotare. Click login to access immediately.</span>
-            </div>
+            {loginError && <p className="text-rose-500 text-xs text-center">{loginError}</p>}
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition-all text-sm cursor-pointer"
+              disabled={loginLoading}
+              className="w-full py-3 rounded-xl font-bold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 transition-all text-sm cursor-pointer disabled:opacity-50"
             >
-              Enter Counsellor Dashboard
+              {loginLoading ? 'Verifying Credentials...' : 'Enter Counsellor Dashboard'}
             </button>
           </form>
 
